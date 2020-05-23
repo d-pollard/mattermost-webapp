@@ -380,6 +380,7 @@ export default class SearchBar extends React.PureComponent {
                             renderDividers={true}
                             clearable={true}
                             onClear={this.onClear}
+                            renderTaggedInput={true}
                         />
                         {this.props.isSearchingTerm && <LoadingSpinner/>}
                         {this.renderHintPopover()}

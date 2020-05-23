@@ -11,6 +11,7 @@ import Constants from 'utils/constants';
 import * as UserAgent from 'utils/user_agent';
 import * as Utils from 'utils/utils.jsx';
 
+import SearchSuggestionInput from './search_suggestion_input.jsx';
 const KeyCodes = Constants.KeyCodes;
 
 export default class SuggestionBox extends React.PureComponent {
@@ -142,6 +143,11 @@ export default class SuggestionBox extends React.PureComponent {
          * Suppress loading spinner when necessary
          */
         suppressLoadingSpinner: PropTypes.bool,
+
+        /**
+         * Define whether or not to render the tagged input
+         */
+        renderTaggedInput: PropTypes.bool,
     }
 
     static defaultProps = {
@@ -189,6 +195,7 @@ export default class SuggestionBox extends React.PureComponent {
             selection: '',
             allowDividers: true,
             presentationType: 'text',
+            tags: [],
         };
 
         this.inputRef = React.createRef();
@@ -608,9 +615,13 @@ export default class SuggestionBox extends React.PureComponent {
             handled = provider.handlePretextChanged(pretext, callback) || handled;
 
             if (handled) {
+                const tags = this.state.tags;
+                const hasTagForPretext = tags.some(({name, value}) => pretext.startsWith(name) && value === '');
+                const newTags = hasTagForPretext ? tags : [...tags, {name: pretext, value: ''}];
                 this.setState({
                     presentationType: provider.presentationType(),
                     allowDividers: provider.allowDividers(),
+                    tags: newTags
                 });
 
                 break;
@@ -670,6 +681,7 @@ export default class SuggestionBox extends React.PureComponent {
             dateComponent,
             listStyle,
             renderNoResults,
+            renderTaggedInput,
             ...props
         } = this.props;
 
@@ -709,6 +721,18 @@ export default class SuggestionBox extends React.PureComponent {
                     role='alert'
                     className='sr-only'
                 />
+                {renderTaggedInput ?
+                    <SearchSuggestionInput
+                        inputRef={this.inputRef}
+                        autoComplete='off'
+                        {...props}
+                        onInput={this.handleChange}
+                        onCompositionStart={this.handleCompositionStart}
+                        onCompositionUpdate={this.handleCompositionUpdate}
+                        onCompositionEnd={this.handleCompositionEnd}
+                        onKeyDown={this.handleKeyDown}
+                        pretext={this.pretext}
+                    /> :
                 <QuickInput
                     ref={this.inputRef}
                     autoComplete='off'
@@ -718,7 +742,7 @@ export default class SuggestionBox extends React.PureComponent {
                     onCompositionUpdate={this.handleCompositionUpdate}
                     onCompositionEnd={this.handleCompositionEnd}
                     onKeyDown={this.handleKeyDown}
-                />
+                    />}
                 {(this.props.openWhenEmpty || this.props.value.length >= this.props.requiredCharacters) && this.state.presentationType === 'text' &&
                     <div style={{width: this.state.width}}>
                         <SuggestionListComponent
