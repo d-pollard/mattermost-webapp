@@ -4,6 +4,7 @@
 import React from 'react';
 
 import QuickInput from 'components/quick_input.jsx';
+import * as Utils from 'utils/utils.jsx';
 
 export default class SearchSuggestionInput extends React.PureComponent {
     static propTypes = QuickInput.propTypes;
@@ -14,12 +15,13 @@ export default class SearchSuggestionInput extends React.PureComponent {
     }
 
     getPretext = () => {
-        const input = this.inputRef.current;
+        const input = this.getInput();
 
         return input.value.substring(0, input.selectionEnd);
     }
 
-    static focus = (input) => {
+    focus = () => {
+        const input = this.getInput();
         if (input.value === '""' || input.value.endsWith('""')) {
             input.selectionStart = input.value.length - 1;
             input.selectionEnd = input.value.length - 1;
@@ -29,28 +31,32 @@ export default class SearchSuggestionInput extends React.PureComponent {
         input.focus();
     }
 
-    focus = () => {
-        SearchSuggestionInput.focus(this.inputRef.current);
-    }
-
     blur = () => {
-        this.inputRef.current.blur();
+        this.getInput().blur();
     }
 
     getClientHeight = () => {
-        return this.inputRef.current.input.clientHeight;
+        return this.getInput().clientHeight;
     }
 
     getValue = () => {
-        return this.inputRef.current.input.value;
+        return this.getInput().value;
     }
 
     getSelectionEnd = () => {
-        return this.inputRef.current.input.selectionEnd;
+        return this.getInput().selectionEnd;
     }
 
     handleChange = (e) => {
         this.props.onInput(e.target.value);
+    }
+
+    setCaretPosition = (position) => {
+        Utils.setCaretPosition(this.getInput(), position);
+    }
+
+    getInput = () => {
+        return this.inputRef.current.input || this.inputRef.current;
     }
 
     render() {

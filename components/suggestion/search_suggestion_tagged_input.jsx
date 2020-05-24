@@ -81,7 +81,7 @@ export default class SearchSuggestionTaggedInput extends SearchSuggestionInput {
     }
 
     getPretext = () => {
-        const input = this.inputRef.current;
+        const input = this.getInput();
         let inputValue = '';
         if (input) {
             inputValue = input.value.substring(0, input.selectionEnd);

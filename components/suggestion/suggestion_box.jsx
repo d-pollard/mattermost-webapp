@@ -246,10 +246,6 @@ export default class SuggestionBox extends React.PureComponent {
         this.addTextAtCaret(insertText, '');
     }
 
-    getTextbox = () => {
-        throw new Error("don't use getTextbox");
-    }
-
     recalculateSize = () => {
         // Pretty hacky way to force an AutosizeTextarea to recalculate its height if that's what
         // we're rendering as the input
@@ -368,6 +364,8 @@ export default class SuggestionBox extends React.PureComponent {
         const text = this.props.value;
         const pretext = this.inputCompRef.current.getPretext();
 
+        console.log({pretext, matchedPretext});
+
         let prefix;
         let keepPretext = false;
         if (pretext.toLowerCase().endsWith(matchedPretext.toLowerCase())) {
@@ -402,15 +400,15 @@ export default class SuggestionBox extends React.PureComponent {
 
         // set the caret position after the next rendering
         window.requestAnimationFrame(() => {
-            if (textbox.value === newValue) {
-                Utils.setCaretPosition(textbox, prefix.length + term.length + 1);
+            const textbox = this.inputCompRef.current;
+            const value = textbox.getValue();
+            if (value === newValue) {
+                textbox.setCaretPosition(prefix.length + term.length + 1);
             }
         });
     }
 
     replaceText = (term) => {
-        // const textbox = this.getTextbox();
-
         // TODO: refactor setting value
         // textbox.value = term;
         console.log('set textbox value to', term);
