@@ -108,8 +108,7 @@ export default class SearchBar extends React.PureComponent {
         }
     }
 
-    handleChange = (e) => {
-        var term = e.target.value;
+    handleChange = (term) => {
         this.props.actions.updateSearchTerms(term);
     }
 
@@ -128,6 +127,8 @@ export default class SearchBar extends React.PureComponent {
     }
 
     onClear = () => {
+        console.log('kurwa');
+
         this.props.actions.updateSearchTerms('');
         if (this.props.isMentionSearch) {
             this.setState({keepInputFocused: false});
@@ -188,13 +189,17 @@ export default class SearchBar extends React.PureComponent {
     }
 
     handleUpdateSearchTerm = (term) => {
+        console.log(term);
         if (this.state.termsUsed === 0) {
+            console.log('handleUpdateSearchTerm termsUsed === 0');
+
             this.props.actions.updateSearchTerms(term.toLowerCase());
         } else {
             const pretextArray = this.props.searchTerms.split(' ');
             pretextArray.pop();
             pretextArray.push(term.toLowerCase());
             this.props.actions.updateSearchTerms(pretextArray.join(' '));
+            console.log(pretextArray.join(' '));
         }
 
         this.focus();
