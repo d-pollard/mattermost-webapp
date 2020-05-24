@@ -118,6 +118,10 @@ export default class SearchSuggestionTaggedInput extends SearchSuggestionInput {
         return this.getPairsText() + this.state.remainder;
     }
 
+    getSelectionEnd = () => {
+        return this.getPairsText().length + this.getInput().selectionEnd;
+    }
+
     render() {
         const {pairs, remainder} = this.state;
 

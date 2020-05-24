@@ -216,8 +216,6 @@ export default class SuggestionBox extends React.PureComponent {
     componentDidUpdate(prevProps) {
         const {value} = this.props;
 
-        // console.log({value, pretext: this.pretext});
-
         // Post was just submitted, update pretext property.
         if (value === '' && this.pretext !== value) {
             this.handlePretextChanged(value);
@@ -361,10 +359,8 @@ export default class SuggestionBox extends React.PureComponent {
 
     addTextAtCaret = (term, matchedPretext) => {
         const caret = this.inputCompRef.current.getSelectionEnd();
-        const text = this.props.value;
+        const text = this.inputCompRef.current.getValue();
         const pretext = this.inputCompRef.current.getPretext();
-
-        console.log({pretext, matchedPretext});
 
         let prefix;
         let keepPretext = false;
@@ -582,8 +578,6 @@ export default class SuggestionBox extends React.PureComponent {
     handleReceivedSuggestionsAndComplete = (suggestions) => {
         const {selection, matchedPretext} = this.handleReceivedSuggestions(suggestions);
 
-        // console.log({selection, matchedPretext});
-
         if (selection) {
             // console.log('Here we know the value is becoming part of a tag', selection, matchedPretext);
             this.handleCompleteWord(selection, matchedPretext);
@@ -609,8 +603,6 @@ export default class SuggestionBox extends React.PureComponent {
                     allowDividers: provider.allowDividers(),
                     tags: newTags
                 });
-
-                // console.log(this.state.tags);
 
                 break;
             }
